@@ -28,7 +28,17 @@ POS_PATH = os.path.join('data', 'positive')
 NEG_PATH = os.path.join('data', 'negative')
 ANC_PATH = os.path.join('data', 'anchor')
 
-#Make above directories if they don't exist
-os.makedirs(POS_PATH)
-os.makedirs(NEG_PATH)
-os.makedirs(ANC_PATH)
+#Make above directories if they don't exist (uncomment the lines below on first run)
+#os.makedirs(POS_PATH)
+#os.makedirs(NEG_PATH)
+#os.makedirs(ANC_PATH)
+
+#Code to move images to the created folders
+#Images are taken from Kaggle dataset (https://www.kaggle.com/datasets/jessicali9530/lfw-dataset?resource=download)
+
+for directory in os.listdir('faces//lfw-deepfunneled//lfw-deepfunneled'):
+    for file in os.listdir(os.path.join('faces//lfw-deepfunneled//lfw-deepfunneled', directory)):
+        EX_PATH = os.path.join('faces', 'lfw-deepfunneled', 'lfw-deepfunneled', directory, file)
+        NEW_PATH = os.path.join(NEG_PATH, file)
+        os.replace(EX_PATH, NEW_PATH)
+        
