@@ -4,6 +4,7 @@ import cv2
 import random
 import numpy as np
 from matplotlib import pyplot as plt
+import uuid #Allows to create a unique ID for each image
 
 #Tensorflow dependencies (for Siamese neural network)
 #Allows to pass through two images and get a similarity score
@@ -35,10 +36,42 @@ ANC_PATH = os.path.join('data', 'anchor')
 
 #Code to move images to the created folders
 #Images are taken from Kaggle dataset (https://www.kaggle.com/datasets/jessicali9530/lfw-dataset?resource=download)
+#Uncomment for first run and potentially change the paths
 
-for directory in os.listdir('faces//lfw-deepfunneled//lfw-deepfunneled'):
-    for file in os.listdir(os.path.join('faces//lfw-deepfunneled//lfw-deepfunneled', directory)):
-        EX_PATH = os.path.join('faces', 'lfw-deepfunneled', 'lfw-deepfunneled', directory, file)
-        NEW_PATH = os.path.join(NEG_PATH, file)
-        os.replace(EX_PATH, NEW_PATH)
+# for directory in os.listdir('faces//lfw-deepfunneled//lfw-deepfunneled'):
+#     for file in os.listdir(os.path.join('faces//lfw-deepfunneled//lfw-deepfunneled', directory)):
+#         EX_PATH = os.path.join('faces', 'lfw-deepfunneled', 'lfw-deepfunneled', directory, file)
+#         NEW_PATH = os.path.join(NEG_PATH, file)
+#         os.replace(EX_PATH, NEW_PATH)
         
+#Access webcamera 
+
+cap = cv2.VideoCapture(0)
+while cap.isOpened(): #Loops through every frame of webcam
+    ret, frame = cap.read() #Read capture at that point in time
+    frame = frame[120:120+250, 200:200+250, :] #Crop image
+    
+
+    #Collect Anchor Images
+    if cv2.waitKey(1) & 0xFF == ord('a'): #Waits one millisecond for pressing 'a' so it can capture image
+        imgname = os.path.join(ANC_PATH, '{}.jpg'.format(uuid.uuid1())) #Creates uniwque name for image in anchor folder
+        cv2.imwrite(imgname, frame) #Writes the image to the anchor folder
+
+    #Collect Positive Images
+    if cv2.waitKey(1) & 0xFF == ord('p'): #Waits one millisecond for pressing 'p' so it can capture image
+        imgname = os.path.join(POS_PATH, '{}.jpg'.format(uuid.uuid1())) #Creates uniwque name for image in anchor folder
+        cv2.imwrite(imgname, frame) #Writes the image to the anchor folder
+
+    cv2.imshow('Image Collection', frame) #Display the frame
+
+    #Breaking gracefully
+    if cv2.waitKey(1) & 0xFF == ord('q'): #Waits one millisecond for pressing 'q' so it can close frame
+        break
+cap.release()
+cv2.destroyAllWindows()
+
+
+plt.imshow(frame) 
+plt.savefig('face.png') #Save the image
+
+
